@@ -1,26 +1,129 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Neutrals — carry the entire structure; the product photo is the color. */
+  --color-neutral-0: #ffffff;
+  --color-neutral-50: #f6f7f9;
+  --color-neutral-100: #f1f3f5;
+  --color-neutral-200: #e4e7ec;
+  --color-neutral-400: #98a2b3;
+  --color-neutral-500: #667085;
+  --color-neutral-700: #344054;
+  --color-neutral-900: #101828;
+
+  /* Accent — two roles, not one. Action (graphite) vs. navigation (blue). */
+  --color-action-50: #ededec;
+  --color-action-900: #141413;
+  --color-link-600: #1a56db;
+
+  /* Semantic — success only ever means money (installments, PIX, frete grátis). */
+  --color-success-50: #ecfdf3;
+  --color-success-600: #027a48;
+  --color-danger-50: #fef3f2;
+  --color-danger-600: #b42318;
+  --color-warning-600: #ba7517;
+
+  /* Auxiliary surface — separates panels (e.g. seller dashboard sidebar)
+     without a heavy border. */
+  --color-surface-sidebar: #fcfcfd;
+
+  /* Radius — 6px controls/badges, 8px cards, pill only for filter chips. */
+  --radius-control: 6px;
+  --radius-card: 8px;
+  --radius-pill: 9999px;
+
+  /* Motion */
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 320ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-snap: cubic-bezier(0.34, 1.3, 0.64, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-neutral-0: var(--color-neutral-0);
+  --color-neutral-50: var(--color-neutral-50);
+  --color-neutral-100: var(--color-neutral-100);
+  --color-neutral-200: var(--color-neutral-200);
+  --color-neutral-400: var(--color-neutral-400);
+  --color-neutral-500: var(--color-neutral-500);
+  --color-neutral-700: var(--color-neutral-700);
+  --color-neutral-900: var(--color-neutral-900);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-action-50: var(--color-action-50);
+  --color-action-900: var(--color-action-900);
+  --color-link-600: var(--color-link-600);
+
+  --color-success-50: var(--color-success-50);
+  --color-success-600: var(--color-success-600);
+  --color-danger-50: var(--color-danger-50);
+  --color-danger-600: var(--color-danger-600);
+  --color-warning-600: var(--color-warning-600);
+
+  --color-surface-sidebar: var(--color-surface-sidebar);
+
+  --radius-control: var(--radius-control);
+  --radius-card: var(--radius-card);
+  --radius-pill: var(--radius-pill);
+
+  /* Durations are consumed as arbitrary values (duration-[var(--dur-fast)])
+     rather than named utilities — Tailwind v4 doesn't generate duration-*
+     classes from non-numeric theme keys the way it does for ease-*. */
+  --ease-out: var(--ease-out);
+  --ease-in: var(--ease-in);
+  --ease-snap: var(--ease-snap);
+
+  --font-sans: var(--font-inter);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-neutral-0);
+  color: var(--color-neutral-900);
+}
+
+/* Card CTA revealed on hover — clickable throughout the fade, no
+   pointer-events toggle. Always visible on touch (no hover capability). */
+@media (hover: hover) {
+  .card-cta {
+    opacity: 0;
+    transition: opacity 500ms var(--ease-out);
+  }
+  .card:hover .card-cta,
+  .card:focus-within .card-cta {
+    opacity: 1;
+  }
+}
+
+/* Reusable "card lift" hover: 3px rise + border darken. --dur-slow (320ms),
+   not the doc's --dur-base card-hover bucket — see product-card.tsx comment. */
+.card-hover-lift {
+  transition:
+    transform var(--dur-slow) var(--ease-out),
+    border-color var(--dur-slow) var(--ease-out);
+}
+.card-hover-lift:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-neutral-400);
+}
+
+/* Cart icon confirmation — replaces a toast. Sparing use of the overshoot
+   ease: this is exactly the "com parcimônia" case it exists for. */
+@keyframes cart-pulse {
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+.cart-pulse {
+  animation: cart-pulse 150ms var(--ease-snap);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
