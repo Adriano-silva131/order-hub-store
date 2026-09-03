@@ -42,3 +42,7 @@ next-env.d.ts
 
 # IDEA
 .idea
+
+# AI agent instructions (AGENTS.md is rewritten by `next dev` on every run)
+CLAUDE.md
+AGENTS.md
